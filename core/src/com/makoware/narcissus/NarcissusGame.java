@@ -8,12 +8,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 
-public class Narcissus extends ApplicationAdapter {
+
+public class NarcissusGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 
-    private static final int        FRAME_COLS = 22;         // #1
-    private static final int        FRAME_ROWS = 6;         // #2
+    private static final int        FRAME_COLS = 4;         // #1
+    private static final int        FRAME_ROWS = 3;         // #2
 
     Animation                       walkAnimation;          // #3
     Texture                         walkSheet;              // #4
@@ -25,8 +26,8 @@ public class Narcissus extends ApplicationAdapter {
 
     @Override
     public void create() {
-        walkSheet = new Texture(Gdx.files.internal("megamanSheetWithArmor.gif")); // #9
-        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/FRAME_COLS, walkSheet.getHeight()/FRAME_ROWS);              // #10
+        walkSheet = new Texture(Gdx.files.internal("megaLibgdx.png")); // #9
+        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/FRAME_COLS, walkSheet.getHeight()/4);              // #10
         walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
         int index = 0;
         for (int i = 0; i < FRAME_ROWS; i++) {
@@ -34,7 +35,7 @@ public class Narcissus extends ApplicationAdapter {
                 walkFrames[index++] = tmp[i][j];
             }
         }
-        walkAnimation = new Animation(0.20f, walkFrames);      // #11
+        walkAnimation = new Animation(0.05f, walkFrames);      // #11
         spriteBatch = new SpriteBatch();                // #12
         stateTime = 0f;                         // #13
     }
