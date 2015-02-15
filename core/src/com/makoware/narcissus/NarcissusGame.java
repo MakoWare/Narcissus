@@ -87,17 +87,11 @@ public class NarcissusGame extends ApplicationAdapter implements InputProcessor,
     private static final String[][] RUBE_SCENE_FILE_LIST =
             {
                     {
-                            "data/palm.json",
-                            "basic.json",
+
+                            "rube/katana.json",
+                            "rube/katanaHolder.json"
                     },
                     {
-                            "data/base.json",
-                            "data/images1.json",
-                            "data/bodies1.json",
-                            "data/images2.json",
-                            "data/bodies2.json",
-                            "data/images3.json"
-
 
 
                     }
@@ -134,8 +128,8 @@ public class NarcissusGame extends ApplicationAdapter implements InputProcessor,
         mCamPos = new Vector3();
         mCurrentPos = new Vector3();
 
-        mCam = new OrthographicCamera(100, 100 * h / w);
-        mCam.position.set(50, 50, 0);
+        mCam = new OrthographicCamera(10, 10 * h / w);
+        mCam.position.set(0, 0, 0);
         mCam.zoom = 1.8f;
         mCam.update();
 
@@ -325,7 +319,7 @@ public class NarcissusGame extends ApplicationAdapter implements InputProcessor,
         System.out.println("fixture0 count: " + mScene.getNamed(Fixture.class, "fixture0").size);
         mScene.printStats();
 
-        testSceneSettings();
+        //testSceneSettings();
 
         mScene.clear(); // no longer need any scene references
     }
@@ -373,7 +367,7 @@ public class NarcissusGame extends ApplicationAdapter implements InputProcessor,
         mBitmapFont.draw(mBatch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         mBatch.end();
 
-        mDebugRender.render(mWorld, mCam.combined);
+        //mDebugRender.render(mWorld, mCam.combined);
     }
 
     /**
