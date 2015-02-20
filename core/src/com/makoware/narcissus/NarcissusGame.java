@@ -367,7 +367,7 @@ public class NarcissusGame extends ApplicationAdapter implements InputProcessor,
         mBitmapFont.draw(mBatch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         mBatch.end();
 
-        //mDebugRender.render(mWorld, mCam.combined);
+        mDebugRender.render(mWorld, mCam.combined);
     }
 
     /**
