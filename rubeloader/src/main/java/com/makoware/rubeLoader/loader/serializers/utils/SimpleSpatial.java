@@ -1,4 +1,4 @@
-package com.makoware.narcissus;
+package com.makoware.rubeLoader.loader.serializers.utils;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;

@@ -1,6 +1,5 @@
 package com.makoware.narcissus.screens;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -35,8 +34,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.makoware.narcissus.NarcissusGame;
-import com.makoware.narcissus.PolySpatial;
-import com.makoware.narcissus.SimpleSpatial;
+import com.makoware.rubeLoader.loader.serializers.utils.PolySpatial;
+import com.makoware.rubeLoader.loader.serializers.utils.SimpleSpatial;
 import com.makoware.rubeLoader.loader.RubeSceneAsyncLoader;
 import com.makoware.rubeLoader.loader.RubeSceneLoader;
 import com.makoware.rubeLoader.loader.serializers.utils.RubeImage;

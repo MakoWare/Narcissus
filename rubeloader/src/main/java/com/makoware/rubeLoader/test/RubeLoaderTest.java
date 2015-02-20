@@ -1,4 +1,4 @@
-package com.makoware.narcissus;
+package com.makoware.rubeLoader.test;
 
         import java.util.HashMap;
         import java.util.Map;
@@ -39,7 +39,9 @@ package com.makoware.narcissus;
         import com.makoware.rubeLoader.loader.RubeSceneLoader;
         import com.makoware.rubeLoader.loader.RubeSceneAsyncLoader;
         import com.makoware.rubeLoader.loader.RubeSceneSyncLoader;
+        import com.makoware.rubeLoader.loader.serializers.utils.PolySpatial;
         import com.makoware.rubeLoader.loader.serializers.utils.RubeImage;
+        import com.makoware.rubeLoader.loader.serializers.utils.SimpleSpatial;
         import com.makoware.rubeLoader.rube.RubeScene;
 
 /**
