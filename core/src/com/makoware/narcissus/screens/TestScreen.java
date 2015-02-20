@@ -103,9 +103,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor, Contact
         STARTING,
         LOADING,
         RUNNING
-    }
-
-    ;
+    };
 
     private GAME_STATE mState;
     @SuppressWarnings("unused")
