@@ -100,8 +100,8 @@ public class TestScreen extends ScreenAdapter{
 
 
     private void presentRunning () {
-//        game.batcher.draw(Assets.pause, 320 - 64, 480 - 64, 64, 64);
-//        Assets.font.draw(game.batcher, "Taco", 16, 480 - 20);
+        game.batcher.draw(Assets.pause, 320 - 64, 480 - 64, 64, 64);
+        Assets.font.draw(game.batcher, "Taco", 16, 480 - 20);
     }
 
 

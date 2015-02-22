@@ -46,7 +46,7 @@ public class World {
         Gdx.app.log(TAG, "create()");
         Entity bob = createBob();
         createCamera(bob);
-        //createBackground();
+        createBackground();
         generateLevel();
 
         this.heightSoFar = 0;
@@ -59,6 +59,7 @@ public class World {
     }
 
     private Entity createBob() {
+        Gdx.app.log(TAG, "createBob()");
         Entity entity = new Entity();
 
         AnimationComponent animation = new AnimationComponent();

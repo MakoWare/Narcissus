@@ -14,8 +14,8 @@ public class NarcissusGame extends Game {
     @Override
     public void create () {
         batcher = new SpriteBatch();
-        //Settings.load();
-        //Assets.load();
+        Settings.load();
+        Assets.load();
         setScreen(new TestScreen(this));
     }
 
