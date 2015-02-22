@@ -10,9 +10,13 @@ import com.makoware.narcissus.components.BackgroundComponent;
 import com.makoware.narcissus.components.BobComponent;
 import com.makoware.narcissus.components.BoundsComponent;
 import com.makoware.narcissus.components.CameraComponent;
+import com.makoware.narcissus.components.CastleComponent;
+import com.makoware.narcissus.components.CoinComponent;
 import com.makoware.narcissus.components.GravityComponent;
 import com.makoware.narcissus.components.MovementComponent;
 import com.makoware.narcissus.components.PlatformComponent;
+import com.makoware.narcissus.components.SpringComponent;
+import com.makoware.narcissus.components.SquirrelComponent;
 import com.makoware.narcissus.components.StateComponent;
 import com.makoware.narcissus.components.TextureComponent;
 import com.makoware.narcissus.components.TransformComponent;
@@ -22,6 +26,7 @@ import java.util.Random;
 
 public class World {
     private static String TAG = "WORLD";
+
     public static final float WORLD_WIDTH = 10;
     public static final float WORLD_HEIGHT = 15 * 20;
     public static final int WORLD_STATE_RUNNING = 0;
@@ -37,35 +42,27 @@ public class World {
 
     private Engine engine;
 
-    public World (Engine engine) {
+    public World(Engine engine) {
         this.engine = engine;
         this.rand = new Random();
     }
 
     public void create() {
-        Gdx.app.log(TAG, "create()");
         Entity bob = createBob();
         createCamera(bob);
-        createBackground();
-        generateLevel();
 
         this.heightSoFar = 0;
         this.score = 0;
         this.state = WORLD_STATE_RUNNING;
     }
 
-    private void generateLevel () {
-        Gdx.app.log(TAG, "generateLevel()");
-    }
-
     private Entity createBob() {
-        Gdx.app.log(TAG, "createBob()");
         Entity entity = new Entity();
 
         AnimationComponent animation = new AnimationComponent();
         BobComponent bob = new BobComponent();
         BoundsComponent bounds = new BoundsComponent();
-        GravityComponent gravity = new GravityComponent();
+        //GravityComponent gravity = new GravityComponent();
         MovementComponent movement = new MovementComponent();
         TransformComponent position = new TransformComponent();
         StateComponent state = new StateComponent();
@@ -85,7 +82,7 @@ public class World {
         entity.add(animation);
         entity.add(bob);
         entity.add(bounds);
-        entity.add(gravity);
+        //entity.add(gravity);
         entity.add(movement);
         entity.add(position);
         entity.add(state);

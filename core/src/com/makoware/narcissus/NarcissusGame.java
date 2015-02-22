@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.makoware.narcissus.screens.TestScreen;
 
 public class NarcissusGame extends Game {
-    // used by all screens
     public SpriteBatch batcher;
 
     @Override
@@ -22,7 +21,7 @@ public class NarcissusGame extends Game {
     @Override
     public void render() {
         GL20 gl = Gdx.gl;
-        gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+        gl.glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         super.render();

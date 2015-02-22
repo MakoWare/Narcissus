@@ -9,8 +9,12 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.makoware.narcissus.World;
 import com.makoware.narcissus.components.BobComponent;
 import com.makoware.narcissus.components.BoundsComponent;
+import com.makoware.narcissus.components.CastleComponent;
+import com.makoware.narcissus.components.CoinComponent;
 import com.makoware.narcissus.components.MovementComponent;
 import com.makoware.narcissus.components.PlatformComponent;
+import com.makoware.narcissus.components.SpringComponent;
+import com.makoware.narcissus.components.SquirrelComponent;
 import com.makoware.narcissus.components.StateComponent;
 import com.makoware.narcissus.components.TransformComponent;
 
@@ -58,6 +62,10 @@ public class CollisionSystem extends EntitySystem {
         this.engine = engine;
 
         bobs = engine.getEntitiesFor(Family.getFor(BobComponent.class, BoundsComponent.class, TransformComponent.class, StateComponent.class));
+        coins = engine.getEntitiesFor(Family.getFor(CoinComponent.class, BoundsComponent.class));
+        squirrels = engine.getEntitiesFor(Family.getFor(SquirrelComponent.class, BoundsComponent.class));
+        springs = engine.getEntitiesFor(Family.getFor(SpringComponent.class, BoundsComponent.class, TransformComponent.class));
+        castles = engine.getEntitiesFor(Family.getFor(CastleComponent.class, BoundsComponent.class));
         platforms = engine.getEntitiesFor(Family.getFor(PlatformComponent.class, BoundsComponent.class, TransformComponent.class));
     }
 
@@ -100,7 +108,54 @@ public class CollisionSystem extends EntitySystem {
                         }
                     }
                 }
+
+                for (int j = 0; j < springs.size(); ++j) {
+                    Entity spring = springs.get(j);
+
+                    TransformComponent springPos = tm.get(spring);
+                    BoundsComponent springBounds = bm.get(spring);
+
+                    if (bobPos.pos.y > springPos.pos.y) {
+                        if (bobBounds.bounds.overlaps(springBounds.bounds)) {
+                            bobSystem.hitSpring(bob);
+                            listener.highJump();
+                        }
+                    }
+                }
             };
+
+            for (int j = 0; j < squirrels.size(); ++j) {
+                Entity squirrel = squirrels.get(j);
+
+                BoundsComponent squirrelBounds = bm.get(squirrel);
+
+                if (squirrelBounds.bounds.overlaps(bobBounds.bounds)) {
+                    bobSystem.hitSquirrel(bob);
+                    listener.hit();
+                }
+            }
+
+            for (int j = 0; j < coins.size(); ++j) {
+                Entity coin = coins.get(j);
+
+                BoundsComponent coinBounds = bm.get(coin);
+
+                if (coinBounds.bounds.overlaps(bobBounds.bounds)) {
+                    engine.removeEntity(coin);
+                    listener.coin();
+                    world.score += CoinComponent.SCORE;
+                }
+            }
+
+            for (int j = 0; j < castles.size(); ++j) {
+                Entity castle = castles.get(j);
+
+                BoundsComponent castleBounds = bm.get(castle);
+
+                if (castleBounds.bounds.overlaps(bobBounds.bounds)) {
+                    world.state = World.WORLD_STATE_NEXT_LEVEL;
+                }
+            }
         }
     }
 }

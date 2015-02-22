@@ -106,7 +106,7 @@ public class BobSystem extends IteratingSystem{
         StateComponent state = sm.get(entity);
         MovementComponent mov = mm.get(entity);
 
-        mov.velocity.y = BobComponent.JUMP_VELOCITY;
+        //mov.velocity.y = BobComponent.JUMP_VELOCITY;
         state.set(BobComponent.STATE_JUMP);
     }
 
