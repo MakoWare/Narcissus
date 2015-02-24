@@ -223,6 +223,7 @@ public class TestScreen extends ScreenAdapter{
         engine.getSystem(MovementSystem.class).setProcessing(false);
         engine.getSystem(StateSystem.class).setProcessing(false);
         engine.getSystem(AnimationSystem.class).setProcessing(false);
+        engine.getSystem(RenderingSystem.class).setProcessing(false);
     }
 
     private void resumeSystems() {
@@ -230,6 +231,7 @@ public class TestScreen extends ScreenAdapter{
         engine.getSystem(MovementSystem.class).setProcessing(true);
         engine.getSystem(StateSystem.class).setProcessing(true);
         engine.getSystem(AnimationSystem.class).setProcessing(true);
+        engine.getSystem(RenderingSystem.class).setProcessing(true);
     }
 
     @Override

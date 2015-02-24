@@ -4,7 +4,10 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.makoware.narcissus.Universe;
+import com.makoware.narcissus.components.B2DComponent;
 import com.makoware.narcissus.components.NarcissusComponent;
 import com.makoware.narcissus.components.MovementComponent;
 import com.makoware.narcissus.components.StateComponent;
@@ -23,6 +26,7 @@ public class NarcissusSystem extends IteratingSystem{
     private ComponentMapper<StateComponent> sm;
     private ComponentMapper<TransformComponent> tm;
     private ComponentMapper<MovementComponent> mm;
+    private ComponentMapper<B2DComponent> b2d;
 
     public NarcissusSystem(Universe universe) {
         super(family);
@@ -33,6 +37,7 @@ public class NarcissusSystem extends IteratingSystem{
         sm = ComponentMapper.getFor(StateComponent.class);
         tm = ComponentMapper.getFor(TransformComponent.class);
         mm = ComponentMapper.getFor(MovementComponent.class);
+        b2d = ComponentMapper.getFor(B2DComponent.class);
     }
 
     public void setAccelX(float accelX) {
@@ -51,7 +56,15 @@ public class NarcissusSystem extends IteratingSystem{
         TransformComponent t = tm.get(entity);
         StateComponent state = sm.get(entity);
         MovementComponent mov = mm.get(entity);
+        B2DComponent box2d = b2d.get(entity);
         NarcissusComponent narcissus = bm.get(entity);
+
+//        Gdx.app.log("NarcissusSystem", " " +  accelX);
+        if(accelX > 0){
+            box2d.body.applyLinearImpulse(new Vector2(-1, 0), box2d.body.getWorldCenter(), true);
+        } else if(accelX < 0) {
+            box2d.body.applyLinearImpulse(new Vector2(1, 0), box2d.body.getWorldCenter(), true);
+        }
 
 
         if (state.get() != NarcissusComponent.STATE_HIT) {

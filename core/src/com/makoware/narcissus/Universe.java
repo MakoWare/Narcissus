@@ -40,9 +40,9 @@ public class Universe {
     }
 
     public void create() {
-        Entity bob = createNarcissus();
-        createCamera(bob);
-
+        Entity narcissus = createNarcissus();
+        createGround();
+        createCamera(narcissus);
         this.state = WORLD_STATE_RUNNING;
     }
 
@@ -79,7 +79,7 @@ public class Universe {
 
         Fixture fixture = body.createFixture(fixtureDef);
         shape.dispose();
-        b2d.setBody(body);
+        b2d.body = body;
 
         entity.add(animation);
         entity.add(narcissus);
@@ -92,6 +92,23 @@ public class Universe {
         engine.addEntity(entity);
 
         return entity;
+    }
+
+    private void createGround(){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(0.0f, 0.0f);
+        Body body = world.createBody(bodyDef);
+        PolygonShape shape = new PolygonShape();
+
+        shape.setAsBox(11.0f, 1.0f);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+
+        Fixture fixture = body.createFixture(fixtureDef);
+        shape.dispose();
     }
 
 
