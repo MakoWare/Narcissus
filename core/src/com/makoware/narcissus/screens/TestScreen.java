@@ -11,20 +11,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.makoware.narcissus.Assets;
 import com.makoware.narcissus.NarcissusGame;
-import com.makoware.narcissus.Settings;
-import com.makoware.narcissus.World;
+import com.makoware.narcissus.Universe;
 import com.makoware.narcissus.systems.AnimationSystem;
-import com.makoware.narcissus.systems.BackgroundSystem;
-import com.makoware.narcissus.systems.BobSystem;
-import com.makoware.narcissus.systems.BoundsSystem;
+import com.makoware.narcissus.systems.NarcissusSystem;
 import com.makoware.narcissus.systems.CameraSystem;
-import com.makoware.narcissus.systems.CollisionSystem;
-import com.makoware.narcissus.systems.CollisionSystem.CollisionListener;
-import com.makoware.narcissus.systems.GravitySystem;
 import com.makoware.narcissus.systems.MovementSystem;
-import com.makoware.narcissus.systems.PlatformSystem;
 import com.makoware.narcissus.systems.RenderingSystem;
-import com.makoware.narcissus.systems.SquirrelSystem;
 import com.makoware.narcissus.systems.StateSystem;
 
 public class TestScreen extends ScreenAdapter{
@@ -38,8 +30,7 @@ public class TestScreen extends ScreenAdapter{
     private Box2DDebugRenderer mDebugRender;
     OrthographicCamera guiCam;
     Vector3 touchPoint;
-    World world;
-    CollisionListener collisionListener;
+    Universe universe;
     Rectangle pauseBounds;
     Rectangle resumeBounds;
     Rectangle quitBounds;
@@ -57,48 +48,21 @@ public class TestScreen extends ScreenAdapter{
         guiCam = new OrthographicCamera(320, 480);
         guiCam.position.set(320 / 2, 480 / 2, 0);
         touchPoint = new Vector3();
-        collisionListener = new CollisionListener() {
-            @Override
-            public void jump () {
-                Assets.playSound(Assets.jumpSound);
-            }
-
-            @Override
-            public void highJump () {
-                Assets.playSound(Assets.highJumpSound);
-            }
-
-            @Override
-            public void hit () {
-                Assets.playSound(Assets.hitSound);
-            }
-
-            @Override
-            public void coin () {
-                Assets.playSound(Assets.coinSound);
-            }
-        };
-
         engine = new Engine();
 
-        world = new World(engine);
+        universe = new Universe(engine);
 
-        engine.addSystem(new BobSystem(world));
-        engine.addSystem(new SquirrelSystem());
-        engine.addSystem(new PlatformSystem());
+        engine.addSystem(new NarcissusSystem(universe));
         engine.addSystem(new CameraSystem());
-        engine.addSystem(new BackgroundSystem());
-        engine.addSystem(new GravitySystem());
+
         engine.addSystem(new MovementSystem());
-        engine.addSystem(new BoundsSystem());
         engine.addSystem(new StateSystem());
         engine.addSystem(new AnimationSystem());
-        engine.addSystem(new CollisionSystem(world, collisionListener));
         engine.addSystem(new RenderingSystem(game.batcher));
 
-        engine.getSystem(BackgroundSystem.class).setCamera(engine.getSystem(RenderingSystem.class).getCamera());
 
-        world.create();
+
+        universe.create();
 
         pauseBounds = new Rectangle(320 - 64, 480 - 64, 64, 64);
         resumeBounds = new Rectangle(160 - 96, 240, 192, 36);
@@ -164,25 +128,7 @@ public class TestScreen extends ScreenAdapter{
             if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) accelX = -5f;
         }
 
-        engine.getSystem(BobSystem.class).setAccelX(accelX);
-
-        if (world.score != lastScore) {
-            lastScore = world.score;
-            scoreString = "SCORE: " + lastScore;
-        }
-        if (world.state == World.WORLD_STATE_NEXT_LEVEL) {
-         //   game.setScreen(new WinScreen(game));
-        }
-        if (world.state == World.WORLD_STATE_GAME_OVER) {
-            state = GAME_OVER;
-            if (lastScore >= Settings.highscores[4])
-                scoreString = "NEW HIGHSCORE: " + lastScore;
-            else
-                scoreString = "SCORE: " + lastScore;
-            pauseSystems();
-            Settings.addScore(lastScore);
-            Settings.save();
-        }
+        engine.getSystem(NarcissusSystem.class).setAccelX(accelX);
     }
 
     private void updatePaused () {
@@ -207,8 +153,7 @@ public class TestScreen extends ScreenAdapter{
     private void updateLevelEnd () {
         if (Gdx.input.justTouched()) {
             engine.removeAllEntities();
-            world = new World(engine);
-            world.score = lastScore;
+            universe = new Universe(engine);
             state = GAME_READY;
         }
     }
@@ -248,8 +193,7 @@ public class TestScreen extends ScreenAdapter{
     }
 
     private void presentRunning () {
-        //game.batcher.draw(Assets.pause, 320 - 64, 480 - 64, 64, 64);
-        //Assets.font.draw(game.batcher, scoreString, 16, 480 - 20);
+
     }
 
     private void presentPaused () {
@@ -273,27 +217,17 @@ public class TestScreen extends ScreenAdapter{
     }
 
     private void pauseSystems() {
-        engine.getSystem(BobSystem.class).setProcessing(false);
-        engine.getSystem(SquirrelSystem.class).setProcessing(false);
-        engine.getSystem(PlatformSystem.class).setProcessing(false);
-        engine.getSystem(GravitySystem.class).setProcessing(false);
+        engine.getSystem(NarcissusSystem.class).setProcessing(false);
         engine.getSystem(MovementSystem.class).setProcessing(false);
-        engine.getSystem(BoundsSystem.class).setProcessing(false);
         engine.getSystem(StateSystem.class).setProcessing(false);
         engine.getSystem(AnimationSystem.class).setProcessing(false);
-        engine.getSystem(CollisionSystem.class).setProcessing(false);
     }
 
     private void resumeSystems() {
-        engine.getSystem(BobSystem.class).setProcessing(true);
-        engine.getSystem(SquirrelSystem.class).setProcessing(true);
-        engine.getSystem(PlatformSystem.class).setProcessing(true);
-        engine.getSystem(GravitySystem.class).setProcessing(true);
+        engine.getSystem(NarcissusSystem.class).setProcessing(true);
         engine.getSystem(MovementSystem.class).setProcessing(true);
-        engine.getSystem(BoundsSystem.class).setProcessing(true);
         engine.getSystem(StateSystem.class).setProcessing(true);
         engine.getSystem(AnimationSystem.class).setProcessing(true);
-        engine.getSystem(CollisionSystem.class).setProcessing(true);
     }
 
     @Override
