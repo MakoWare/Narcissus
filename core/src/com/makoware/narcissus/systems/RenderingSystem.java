@@ -4,9 +4,12 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.makoware.narcissus.components.TextureComponent;
 import com.makoware.narcissus.components.TransformComponent;
@@ -22,15 +25,18 @@ public class RenderingSystem extends IteratingSystem{
     private Array<Entity> renderQueue;
     private Comparator<Entity> comparator;
     private OrthographicCamera cam;
+    private World world;
+    private Box2DDebugRenderer debugRenderer;
 
     private ComponentMapper<TextureComponent> textureM;
     private ComponentMapper<TransformComponent> transformM;
 
-    public RenderingSystem(SpriteBatch batch) {
+    public RenderingSystem(SpriteBatch batch, World world, Box2DDebugRenderer debugRenderer) {
         super(Family.getFor(TransformComponent.class, TextureComponent.class));
 
         textureM = ComponentMapper.getFor(TextureComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
+
 
         renderQueue = new Array<Entity>();
 
@@ -43,6 +49,8 @@ public class RenderingSystem extends IteratingSystem{
         };
 
         this.batch = batch;
+        this.world = world;
+        this.debugRenderer = debugRenderer;
 
         cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
         cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
@@ -51,6 +59,11 @@ public class RenderingSystem extends IteratingSystem{
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+
+
+        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        debugRenderer.render(world, cam.combined);
+
 
         renderQueue.sort(comparator);
 

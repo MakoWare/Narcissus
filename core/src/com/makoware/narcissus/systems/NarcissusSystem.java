@@ -51,7 +51,7 @@ public class NarcissusSystem extends IteratingSystem{
         TransformComponent t = tm.get(entity);
         StateComponent state = sm.get(entity);
         MovementComponent mov = mm.get(entity);
-        NarcissusComponent bob = bm.get(entity);
+        NarcissusComponent narcissus = bm.get(entity);
 
 
         if (state.get() != NarcissusComponent.STATE_HIT) {

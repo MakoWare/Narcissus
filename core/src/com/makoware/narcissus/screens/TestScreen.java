@@ -7,8 +7,10 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.makoware.narcissus.Assets;
 import com.makoware.narcissus.NarcissusGame;
 import com.makoware.narcissus.Universe;
@@ -38,11 +40,13 @@ public class TestScreen extends ScreenAdapter{
     String scoreString;
 
     Engine engine;
+    World world;
 
     private int state;
 
     public TestScreen (NarcissusGame game) {
         this.game = game;
+        world = new World(new Vector2(0, -1f), true);
         mDebugRender = new Box2DDebugRenderer();
         state = GAME_READY;
         guiCam = new OrthographicCamera(320, 480);
@@ -50,7 +54,7 @@ public class TestScreen extends ScreenAdapter{
         touchPoint = new Vector3();
         engine = new Engine();
 
-        universe = new Universe(engine);
+        universe = new Universe(engine, world);
 
         engine.addSystem(new NarcissusSystem(universe));
         engine.addSystem(new CameraSystem());
@@ -58,9 +62,7 @@ public class TestScreen extends ScreenAdapter{
         engine.addSystem(new MovementSystem());
         engine.addSystem(new StateSystem());
         engine.addSystem(new AnimationSystem());
-        engine.addSystem(new RenderingSystem(game.batcher));
-
-
+        engine.addSystem(new RenderingSystem(game.batcher, world, mDebugRender));
 
         universe.create();
 
@@ -153,7 +155,7 @@ public class TestScreen extends ScreenAdapter{
     private void updateLevelEnd () {
         if (Gdx.input.justTouched()) {
             engine.removeAllEntities();
-            universe = new Universe(engine);
+            universe = new Universe(engine, world);
             state = GAME_READY;
         }
     }
