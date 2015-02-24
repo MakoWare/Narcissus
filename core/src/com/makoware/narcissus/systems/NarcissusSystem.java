@@ -61,9 +61,13 @@ public class NarcissusSystem extends IteratingSystem{
 
 //        Gdx.app.log("NarcissusSystem", " " +  accelX);
         if(accelX > 0){
-            box2d.body.applyLinearImpulse(new Vector2(-1, 0), box2d.body.getWorldCenter(), true);
+            box2d.body.setLinearVelocity(new Vector2(-10, 0));
+            //box2d.body.applyLinearImpulse(new Vector2(-1, 0), box2d.body.getWorldCenter(), true);
         } else if(accelX < 0) {
-            box2d.body.applyLinearImpulse(new Vector2(1, 0), box2d.body.getWorldCenter(), true);
+            box2d.body.setLinearVelocity(new Vector2(10, 0));
+            //box2d.body.applyLinearImpulse(new Vector2(1, 0), box2d.body.getWorldCenter(), true);
+        } else {
+            box2d.body.setLinearVelocity(new Vector2(0, 0));
         }
 
 
