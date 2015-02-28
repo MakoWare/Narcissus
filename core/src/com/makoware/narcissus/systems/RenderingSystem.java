@@ -16,6 +16,8 @@ import com.makoware.narcissus.components.TransformComponent;
 
 import java.util.Comparator;
 
+import box2dLight.RayHandler;
+
 public class RenderingSystem extends IteratingSystem{
     static final float FRUSTUM_WIDTH = 10;
     static final float FRUSTUM_HEIGHT = 15;
@@ -27,11 +29,12 @@ public class RenderingSystem extends IteratingSystem{
     private OrthographicCamera cam;
     private World world;
     private Box2DDebugRenderer debugRenderer;
+    private RayHandler rayHandler;
 
     private ComponentMapper<TextureComponent> textureM;
     private ComponentMapper<TransformComponent> transformM;
 
-    public RenderingSystem(SpriteBatch batch, World world, Box2DDebugRenderer debugRenderer) {
+    public RenderingSystem(SpriteBatch batch, World world, Box2DDebugRenderer debugRenderer, RayHandler rayHandler) {
         super(Family.getFor(TransformComponent.class, TextureComponent.class));
 
         textureM = ComponentMapper.getFor(TextureComponent.class);
@@ -51,6 +54,7 @@ public class RenderingSystem extends IteratingSystem{
         this.batch = batch;
         this.world = world;
         this.debugRenderer = debugRenderer;
+        this.rayHandler = rayHandler;
 
         cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
         cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
@@ -94,6 +98,10 @@ public class RenderingSystem extends IteratingSystem{
         }
 
         batch.end();
+
+        rayHandler.setCombinedMatrix(cam.combined);
+        rayHandler.updateAndRender();
+
         renderQueue.clear();
     }
 

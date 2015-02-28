@@ -2,67 +2,52 @@ package com.makoware.narcissus;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.makoware.narcissus.components.AnimationComponent;
 import com.makoware.narcissus.components.B2DComponent;
 import com.makoware.narcissus.components.NarcissusComponent;
 import com.makoware.narcissus.components.CameraComponent;
 import com.makoware.narcissus.components.MovementComponent;
 import com.makoware.narcissus.components.StateComponent;
-import com.makoware.narcissus.components.TextureComponent;
 import com.makoware.narcissus.components.TransformComponent;
 import com.makoware.narcissus.systems.RenderingSystem;
 
-import java.util.Random;
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 public class Universe {
     private static String TAG = "WORLD";
 
     public static final float WORLD_WIDTH = 10;
     public static final float WORLD_HEIGHT = 15 * 20;
-    public static final int WORLD_STATE_RUNNING = 0;
-    public static final int WORLD_STATE_NEXT_LEVEL = 1;
-    public static final int WORLD_STATE_GAME_OVER = 2;
 
     private Engine engine;
     private World world;
-    private int state;
+    private RayHandler rayHandler;
 
-    public Universe(Engine engine, World world) {
+    public Universe(Engine engine, World world, RayHandler rayHandler) {
         this.engine = engine;
         this.world = world;
+        this.rayHandler = rayHandler;
     }
 
     public void create() {
         Entity narcissus = createNarcissus();
         createGround();
+        createLight();
         createCamera(narcissus);
-        this.state = WORLD_STATE_RUNNING;
     }
 
     private Entity createNarcissus() {
         Entity entity = new Entity();
 
-        AnimationComponent animation = new AnimationComponent();
         NarcissusComponent narcissus = new NarcissusComponent();
-        MovementComponent movement = new MovementComponent();
-        TransformComponent position = new TransformComponent();
-        StateComponent state = new StateComponent();
-        TextureComponent texture = new TextureComponent();
         B2DComponent b2d = new B2DComponent();
-
-        animation.animations.put(NarcissusComponent.STATE_FALL, Assets.bobFall);
-        animation.animations.put(NarcissusComponent.STATE_HIT, Assets.bobHit);
-        animation.animations.put(NarcissusComponent.STATE_JUMP, Assets.bobJump);
-
-        position.pos.set(5.0f, 1.0f, 0.0f);
-        state.set(NarcissusComponent.STATE_JUMP);
 
         //Create B2D Body
         BodyDef bodyDef = new BodyDef();
@@ -77,21 +62,20 @@ public class Universe {
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
 
-        Fixture fixture = body.createFixture(fixtureDef);
+        body.createFixture(fixtureDef);
         shape.dispose();
         b2d.body = body;
 
-        entity.add(animation);
         entity.add(narcissus);
-        entity.add(movement);
-        entity.add(position);
-        entity.add(state);
-        entity.add(texture);
         entity.add(b2d);
 
         engine.addEntity(entity);
 
         return entity;
+    }
+
+    private void createLight(){
+        new PointLight(rayHandler, 500, new Color(1,1,1,1), 30, 2, 3);
     }
 
     private void createGround(){
@@ -107,7 +91,7 @@ public class Universe {
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
 
-        Fixture fixture = body.createFixture(fixtureDef);
+        body.createFixture(fixtureDef);
         shape.dispose();
     }
 

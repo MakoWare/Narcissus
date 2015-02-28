@@ -3,13 +3,9 @@ package com.makoware.narcissus.components;
 import com.badlogic.ashley.core.Component;
 
 public class NarcissusComponent extends Component{
-    public static final int STATE_JUMP = 0;
-    public static final int STATE_FALL = 1;
-    public static final int STATE_HIT = 2;
-    public static final float JUMP_VELOCITY = 11;
-    public static final float MOVE_VELOCITY = 20;
-    public static final float WIDTH = 0.8f;
-    public static final float HEIGHT = 0.8f;
+    public static final int MOVE_UP = 0;
+    public static final int MOVE_RIGHT = 1;
+    public static final int MOVE_DOWN = 2;
+    public static final int MOVE_LEFT = 3;
 
-    public float heightSoFar = 0.0f;
 }

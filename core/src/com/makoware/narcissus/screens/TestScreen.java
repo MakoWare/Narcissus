@@ -14,12 +14,13 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.makoware.narcissus.Assets;
 import com.makoware.narcissus.NarcissusGame;
 import com.makoware.narcissus.Universe;
-import com.makoware.narcissus.systems.AnimationSystem;
 import com.makoware.narcissus.systems.NarcissusSystem;
 import com.makoware.narcissus.systems.CameraSystem;
 import com.makoware.narcissus.systems.MovementSystem;
 import com.makoware.narcissus.systems.RenderingSystem;
 import com.makoware.narcissus.systems.StateSystem;
+
+import box2dLight.RayHandler;
 
 public class TestScreen extends ScreenAdapter{
     static final int GAME_READY = 0;
@@ -41,28 +42,27 @@ public class TestScreen extends ScreenAdapter{
 
     Engine engine;
     World world;
+    RayHandler rayHandler;
 
     private int state;
 
     public TestScreen (NarcissusGame game) {
         this.game = game;
-        world = new World(new Vector2(0, -1f), true);
+        world = new World(new Vector2(0, 0), true);
         mDebugRender = new Box2DDebugRenderer();
         state = GAME_READY;
         guiCam = new OrthographicCamera(320, 480);
         guiCam.position.set(320 / 2, 480 / 2, 0);
         touchPoint = new Vector3();
-        engine = new Engine();
 
-        universe = new Universe(engine, world);
+        engine = new Engine();
+        rayHandler = new RayHandler(world);
+        universe = new Universe(engine, world, rayHandler);
+
 
         engine.addSystem(new NarcissusSystem(universe));
         engine.addSystem(new CameraSystem());
-
-        engine.addSystem(new MovementSystem());
-        engine.addSystem(new StateSystem());
-        engine.addSystem(new AnimationSystem());
-        engine.addSystem(new RenderingSystem(game.batcher, world, mDebugRender));
+        engine.addSystem(new RenderingSystem(game.batcher, world, mDebugRender, rayHandler));
 
         universe.create();
 
@@ -121,16 +121,18 @@ public class TestScreen extends ScreenAdapter{
         ApplicationType appType = Gdx.app.getType();
 
         // should work also with Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer)
-        float accelX = 0.0f;
+        String movementDirection = "none";
 
         if (appType == ApplicationType.Android || appType == ApplicationType.iOS) {
-            accelX = Gdx.input.getAccelerometerX();
+            //accelX = Gdx.input.getAccelerometerX();
         } else {
-            if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) accelX = 5f;
-            if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) accelX = -5f;
+            if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) movementDirection = "left";
+            if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) movementDirection ="right";
+            if (Gdx.input.isKeyPressed(Keys.DPAD_UP)) movementDirection ="up";
+            if (Gdx.input.isKeyPressed(Keys.DPAD_DOWN)) movementDirection ="down";
         }
 
-        engine.getSystem(NarcissusSystem.class).setAccelX(accelX);
+        engine.getSystem(NarcissusSystem.class).setMovementDirection(movementDirection);
     }
 
     private void updatePaused () {
@@ -155,7 +157,7 @@ public class TestScreen extends ScreenAdapter{
     private void updateLevelEnd () {
         if (Gdx.input.justTouched()) {
             engine.removeAllEntities();
-            universe = new Universe(engine, world);
+            universe = new Universe(engine, world, rayHandler);
             state = GAME_READY;
         }
     }
@@ -220,17 +222,11 @@ public class TestScreen extends ScreenAdapter{
 
     private void pauseSystems() {
         engine.getSystem(NarcissusSystem.class).setProcessing(false);
-        engine.getSystem(MovementSystem.class).setProcessing(false);
-        engine.getSystem(StateSystem.class).setProcessing(false);
-        engine.getSystem(AnimationSystem.class).setProcessing(false);
         engine.getSystem(RenderingSystem.class).setProcessing(false);
     }
 
     private void resumeSystems() {
         engine.getSystem(NarcissusSystem.class).setProcessing(true);
-        engine.getSystem(MovementSystem.class).setProcessing(true);
-        engine.getSystem(StateSystem.class).setProcessing(true);
-        engine.getSystem(AnimationSystem.class).setProcessing(true);
         engine.getSystem(RenderingSystem.class).setProcessing(true);
     }
 

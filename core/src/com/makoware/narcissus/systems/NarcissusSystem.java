@@ -9,93 +9,59 @@ import com.badlogic.gdx.math.Vector2;
 import com.makoware.narcissus.Universe;
 import com.makoware.narcissus.components.B2DComponent;
 import com.makoware.narcissus.components.NarcissusComponent;
-import com.makoware.narcissus.components.MovementComponent;
-import com.makoware.narcissus.components.StateComponent;
-import com.makoware.narcissus.components.TransformComponent;
+
 
 public class NarcissusSystem extends IteratingSystem{
-    private static final Family family = Family.getFor(NarcissusComponent.class,
-            StateComponent.class,
-            TransformComponent.class,
-            MovementComponent.class);
-
-    private float accelX = 0.0f;
+    private static final Family family = Family.getFor(NarcissusComponent.class, B2DComponent.class);
+    private String movementDirection = "none";
     private Universe universe;
 
-    private ComponentMapper<NarcissusComponent> bm;
-    private ComponentMapper<StateComponent> sm;
-    private ComponentMapper<TransformComponent> tm;
-    private ComponentMapper<MovementComponent> mm;
+    private ComponentMapper<NarcissusComponent> nc;
     private ComponentMapper<B2DComponent> b2d;
 
     public NarcissusSystem(Universe universe) {
         super(family);
 
         this.universe = universe;
-
-        bm = ComponentMapper.getFor(NarcissusComponent.class);
-        sm = ComponentMapper.getFor(StateComponent.class);
-        tm = ComponentMapper.getFor(TransformComponent.class);
-        mm = ComponentMapper.getFor(MovementComponent.class);
+        nc = ComponentMapper.getFor(NarcissusComponent.class);
         b2d = ComponentMapper.getFor(B2DComponent.class);
     }
 
-    public void setAccelX(float accelX) {
-        this.accelX = accelX;
+    public void setMovementDirection(String direction) {
+        this.movementDirection = direction;
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-
-        accelX = 0.0f;
+        movementDirection = "none";
     }
 
     @Override
     public void processEntity(Entity entity, float deltaTime) {
-        TransformComponent t = tm.get(entity);
-        StateComponent state = sm.get(entity);
-        MovementComponent mov = mm.get(entity);
         B2DComponent box2d = b2d.get(entity);
-        NarcissusComponent narcissus = bm.get(entity);
 
-//        Gdx.app.log("NarcissusSystem", " " +  accelX);
-        if(accelX > 0){
-            box2d.body.setLinearVelocity(new Vector2(-10, 0));
-            //box2d.body.applyLinearImpulse(new Vector2(-1, 0), box2d.body.getWorldCenter(), true);
-        } else if(accelX < 0) {
-            box2d.body.setLinearVelocity(new Vector2(10, 0));
-            //box2d.body.applyLinearImpulse(new Vector2(1, 0), box2d.body.getWorldCenter(), true);
+        //TODO this should all probably go in a MovementSystem
+
+        Vector2 currentVelocity = box2d.body.getLinearVelocity();
+        if(movementDirection.equals("up")){
+            float velocityChange = 10 - currentVelocity.y;
+            float impulse = box2d.body.getMass() * velocityChange;
+            box2d.body.applyLinearImpulse(new Vector2(0, impulse), box2d.body.getWorldCenter(), true);
+        } else if(movementDirection.equals("right")){
+            float velocityChange = 10 - currentVelocity.x;
+            float impulse = box2d.body.getMass() * velocityChange;
+            box2d.body.applyLinearImpulse(new Vector2(impulse, 0), box2d.body.getWorldCenter(), true);
+        } else if(movementDirection.equals("down")) {
+            float velocityChange = -10 - currentVelocity.y;
+            float impulse = box2d.body.getMass() * velocityChange;
+            box2d.body.applyLinearImpulse(new Vector2(0, impulse), box2d.body.getWorldCenter(), true);
+        } else if (movementDirection.equals("left")){
+            float velocityChange = -10 - currentVelocity.x;
+            float impulse = box2d.body.getMass() * velocityChange;
+            box2d.body.applyLinearImpulse(new Vector2(impulse, 0), box2d.body.getWorldCenter(), true);
         } else {
             box2d.body.setLinearVelocity(new Vector2(0, 0));
         }
-
-
-        if (state.get() != NarcissusComponent.STATE_HIT) {
-            mov.velocity.x = -accelX / 10.0f * NarcissusComponent.MOVE_VELOCITY;
-        }
-
-        if (mov.velocity.y > 0 && state.get() != NarcissusComponent.STATE_HIT) {
-            if (state.get() != NarcissusComponent.STATE_JUMP) {
-                state.set(NarcissusComponent.STATE_JUMP);
-            }
-        }
-
-        if (mov.velocity.y < 0 && state.get() != NarcissusComponent.STATE_HIT) {
-            if (state.get() != NarcissusComponent.STATE_FALL) {
-                state.set(NarcissusComponent.STATE_FALL);
-            }
-        }
-
-        if (t.pos.x < 0) {
-            t.pos.x = Universe.WORLD_WIDTH;
-        }
-
-        if (t.pos.x > Universe.WORLD_WIDTH) {
-            t.pos.x = 0;
-        }
-
-        t.scale.x = mov.velocity.x < 0.0f ? Math.abs(t.scale.x) * -1.0f : Math.abs(t.scale.x);
-
     }
 }
