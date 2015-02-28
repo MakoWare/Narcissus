@@ -16,9 +16,7 @@ import com.makoware.narcissus.NarcissusGame;
 import com.makoware.narcissus.Universe;
 import com.makoware.narcissus.systems.NarcissusSystem;
 import com.makoware.narcissus.systems.CameraSystem;
-import com.makoware.narcissus.systems.MovementSystem;
 import com.makoware.narcissus.systems.RenderingSystem;
-import com.makoware.narcissus.systems.StateSystem;
 
 import box2dLight.RayHandler;
 

@@ -12,7 +12,7 @@ import com.makoware.narcissus.components.NarcissusComponent;
 
 
 public class NarcissusSystem extends IteratingSystem{
-    private static final Family family = Family.getFor(NarcissusComponent.class, B2DComponent.class);
+    private static final Family family = Family.getFor(NarcissusComponent.class,  B2DComponent.class);
     private String movementDirection = "none";
     private Universe universe;
 
@@ -41,7 +41,7 @@ public class NarcissusSystem extends IteratingSystem{
     public void processEntity(Entity entity, float deltaTime) {
         B2DComponent box2d = b2d.get(entity);
 
-        //TODO this should all probably go in a MovementSystem
+        //TODO this should all probably go in a MovementSystem or ControlsSystem
 
         Vector2 currentVelocity = box2d.body.getLinearVelocity();
         if(movementDirection.equals("up")){

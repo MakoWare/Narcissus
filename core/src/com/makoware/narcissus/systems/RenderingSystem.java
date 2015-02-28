@@ -12,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.makoware.narcissus.components.TextureComponent;
-import com.makoware.narcissus.components.TransformComponent;
 
 import java.util.Comparator;
 
@@ -32,25 +31,13 @@ public class RenderingSystem extends IteratingSystem{
     private RayHandler rayHandler;
 
     private ComponentMapper<TextureComponent> textureM;
-    private ComponentMapper<TransformComponent> transformM;
 
     public RenderingSystem(SpriteBatch batch, World world, Box2DDebugRenderer debugRenderer, RayHandler rayHandler) {
-        super(Family.getFor(TransformComponent.class, TextureComponent.class));
+        super(Family.getFor(TextureComponent.class));
 
         textureM = ComponentMapper.getFor(TextureComponent.class);
-        transformM = ComponentMapper.getFor(TransformComponent.class);
-
 
         renderQueue = new Array<Entity>();
-
-        comparator = new Comparator<Entity>() {
-            @Override
-            public int compare(Entity entityA, Entity entityB) {
-                return (int)Math.signum(transformM.get(entityB).pos.z -
-                        transformM.get(entityA).pos.z);
-            }
-        };
-
         this.batch = batch;
         this.world = world;
         this.debugRenderer = debugRenderer;
@@ -74,28 +61,6 @@ public class RenderingSystem extends IteratingSystem{
         cam.update();
         batch.setProjectionMatrix(cam.combined);
         batch.begin();
-
-        for (Entity entity : renderQueue) {
-            TextureComponent tex = textureM.get(entity);
-
-            if (tex.region == null) {
-                continue;
-            }
-
-            TransformComponent t = transformM.get(entity);
-
-            float width = tex.region.getRegionWidth();
-            float height = tex.region.getRegionHeight();
-            float originX = width * 0.5f;
-            float originY = height * 0.5f;
-
-            batch.draw(tex.region,
-                    t.pos.x - originX, t.pos.y - originY,
-                    originX, originY,
-                    width, height,
-                    t.scale.x * PIXELS_TO_METRES, t.scale.y * PIXELS_TO_METRES,
-                    MathUtils.radiansToDegrees * t.rotation);
-        }
 
         batch.end();
 

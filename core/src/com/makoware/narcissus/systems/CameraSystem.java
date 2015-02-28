@@ -5,16 +5,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.makoware.narcissus.components.CameraComponent;
-import com.makoware.narcissus.components.TransformComponent;
 
 public class CameraSystem extends IteratingSystem {
-    private ComponentMapper<TransformComponent> tm;
     private ComponentMapper<CameraComponent> cm;
 
     public CameraSystem() {
         super(Family.getFor(CameraComponent.class));
 
-        tm = ComponentMapper.getFor(TransformComponent.class);
         cm = ComponentMapper.getFor(CameraComponent.class);
     }
 
@@ -26,12 +23,6 @@ public class CameraSystem extends IteratingSystem {
             return;
         }
 
-        TransformComponent target = tm.get(cam.target);
-
-        if (target == null) {
-            return;
-        }
-
-        cam.camera.position.y = Math.max(cam.camera.position.y, target.pos.y);
+        //cam.camera.position.y = Math.max(cam.camera.position.y, target.pos.y);
     }
 }

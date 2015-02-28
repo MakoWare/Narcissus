@@ -12,9 +12,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.makoware.narcissus.components.B2DComponent;
 import com.makoware.narcissus.components.NarcissusComponent;
 import com.makoware.narcissus.components.CameraComponent;
-import com.makoware.narcissus.components.MovementComponent;
-import com.makoware.narcissus.components.StateComponent;
-import com.makoware.narcissus.components.TransformComponent;
 import com.makoware.narcissus.systems.RenderingSystem;
 
 import box2dLight.PointLight;
@@ -46,10 +43,11 @@ public class Universe {
     private Entity createNarcissus() {
         Entity entity = new Entity();
 
+        //Narcissus Component
         NarcissusComponent narcissus = new NarcissusComponent();
-        B2DComponent b2d = new B2DComponent();
 
-        //Create B2D Body
+        //B2D Component
+        B2DComponent b2d = new B2DComponent();
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(7.0f, 5.0f);
